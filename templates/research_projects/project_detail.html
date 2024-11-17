@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# -- タイトル -- #}
+{% block title %}Project Detail: {{ project.name }}{% endblock %}
+
+{# -- CSS -- #}
+{% block extra_css %}
+    <style type="text/css">
+        main > section > .mx-auto {
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{# --メインコンテンツ --#}
+{% block main %}
+    <h1>{{ project.name }}<br></h1>
+    <h2><a href="{{ project.project_url }}">プロジェクトURL</a></h2>
+    <h2>参加メンバー<br></h2>
+    {% for member in project.members.all %}
+    <a href="{% url 'accounts:profile' member.username %}"> {{ member.username }} </a>
+    {% endfor %}
+    <br><br>
+    {% if request.user in project.members.all %}
+    <a href="{% url 'research_projects:create_post' project.project_id %}">Add post</a><br>
+    {% endif %}
+    {% for post in project.posts.all %}
+    {{ post.contributer }}
+    {{ post.content }}
+    {{ post.posted_on }}
+    <br>
+    {% endfor %}
+    <h2>Citations</h2>
+    {% if request.user in project.members.all %}
+    <a href="{% url 'research_projects:add_paper' project.project_id %}">Add paper</a><br>
+    {% endif %}
+    {% for paper_index in project.papers_indices.all %}
+
+    {% if request.user in project.members.all %}
+    {{ paper_index.index }} {{ paper_index.paper.title }} {% for author in paper_index.paper.authors.all %} {{ author.first_name }} {{author.last_name}} {% endfor %} {{ paper_index.paper.arxiv }} {% if paper_index.description %} {{ paper_index.description }} {% endif %}
+    <br>
+    <p><a href="{% url 'research_projects:edit_citation' project.project_id paper_index.index %}"> Edit</a></p>
+    {% else %}
+
+    {% endif %}
+    {% endfor %}
+    <a href="{% url 'accounts:index' %}" class="btn btn-secondary">Back</a>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
+{% endblock %}

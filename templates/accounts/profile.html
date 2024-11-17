@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# -- タイトル -- #}
+{% block title%}profile{% endblock %}
+
+{# -- CSS -- #}
+{% block extra_css %}
+    <style type="text/css">
+        main > section > .mx-auto {
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{# --メインコンテンツ --#}
+{% block main %}
+    <main>
+        {{ profile_user }}のページ
+        {% if is_self %}
+        <p>自分のページだよ</p>
+        <p>プロジェクト作成</p>
+        <a href="{% url 'research_projects:create_project' %}">CLICK!</a>
+        <form method="post" class="btn btn-secondary" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit">ログアウト!</button>
+        </form>
+        {% else %}
+        <p>人のページだよ</p>
+        {% endif %}
+
+
+        {% for project in profile_user_projects.all %}
+        {% if project.is_visible or user in project.members.all %}
+        {% if project.is_public or user in project.members.all %}
+        <a href="{% url 'research_projects:project_detail' project.project_id %}">
+        {{ project.name }} {{ project.short_project_id }} {{ project.description }}
+        </a>
+        {% else %}
+        {{ project.name }} {{ project.short_project_id }} {{ project.description }}
+        {% endif %}
+        <br>
+        {% endif %}
+        {% endfor %}
+    </main>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
+{% endblock %}
