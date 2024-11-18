@@ -16,15 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-
-from accounts import views as accounts_views
-from papers import views as papers_views
-from research_projects import views as research_project_views
+from django.views.generic import TemplateView
+# from accounts import views as accounts_views
+# from papers import views as papers_views
+# from research_projects import views as research_project_views
 #from . import views
+
+class TopPageView(TemplateView):
+    template_name = "index.html"
+
+top_page = TopPageView.as_view()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('', views.index),
+    path('', top_page, name="top_page"),
     path('accounts/', include('accounts.urls')),
     path('papers/', include('papers.urls')),
     path('research_projects/', include('research_projects.urls'))

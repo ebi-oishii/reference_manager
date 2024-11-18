@@ -15,6 +15,8 @@ class Project(models.Model):
     members = models.ManyToManyField(CustomUser, verbose_name="member", related_name="projects")
     description = models.TextField(verbose_name="description", blank=True, null=True)
     project_url = models.URLField(verbose_name="project URL", max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
     is_public = models.BooleanField(verbose_name="is_public", default=False)
     is_visible = models.BooleanField(verbose_name="is_visible", default=True)
 

@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, DetailView
 from .forms import ImportPaperForm
 from .models import Paper, Author
 from django.urls import reverse_lazy
@@ -76,7 +76,6 @@ class ImportPaperView(CreateView):
                     if "arxiv" in link["URL"]:
                         arxiv_id = link["URL"].split("/")[-1]
                         break
-            
                 paper.arxiv = arxiv_id
                 published_parts = message["published"]["date-parts"][0]
                 ymd = [1,1,1]
@@ -89,3 +88,25 @@ class ImportPaperView(CreateView):
             return super().form_valid(form)
 
 import_paper = ImportPaperView.as_view()
+
+
+class PaperDetailView(DetailView):
+    model = Paper
+    template_name = "papers/paper_detail.html"
+    context_object_name = "paper"
+
+    def get_object(self, queryset=None):
+        # URLからproject_idを取得して、それを元にProjectオブジェクトを取得
+        paper_id = self.kwargs.get('paper_id')
+        return get_object_or_404(Paper, paper_id=paper_id)
+
+paper_detail = PaperDetailView.as_view()
+
+
+class PaperListView(ListView):
+    template_name = "papers/paper_list.html"
+    context_object_name = "papers"
+    queryset = Paper.objects.all()
+    paginate_by = 20
+
+paper_list = PaperListView.as_view()

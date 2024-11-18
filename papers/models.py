@@ -1,5 +1,5 @@
 from django.db import models
-
+import uuid
 # Create your models here.
 
 #publisher class
@@ -40,7 +40,8 @@ class Paper(models.Model):
     class Mata:
         db_table = "paper"
 
-    title = models.TextField(verbose_name="title", unique=True)
+    paper_id = models.UUIDField(verbose_name="paper_id", primary_key=True, default=uuid.uuid4)
+    title = models.TextField(verbose_name="title")
     publisher = models.ForeignKey(Publisher, verbose_name="publisher", blank=True, null=True, on_delete=models.PROTECT)
     authors = models.ManyToManyField(Author, verbose_name="author")
     arxiv = models.TextField(verbose_name="arxiv_id", blank=True, null=True, unique=True)

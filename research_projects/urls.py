@@ -10,5 +10,6 @@ urlpatterns = [
     path('add_post/<uuid:project_id>/', views.add_post, name="create_post"),
     path('add_paper/<uuid:project_id>/', views.add_paper, name="add_paper"),
     path('edit_citation/<uuid:project_id>/<int:index>', views.edit_citation, name="edit_citation"),
-    path('autocomplete/paper', views.paper_auto_complete, name="paper-autocomplete"),
+    path('project_list/', views.project_list, name="project_list"),
+    path('add_member/<uuid:project_id>/', views.add_member, name="add_member"),
 ]

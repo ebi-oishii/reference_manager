@@ -16,7 +16,7 @@ class RegisterForm(forms.ModelForm):
     password2 = forms.CharField(label="confirmation password", required=True, widget=forms.PasswordInput(attrs={"placeholder": "again"}))
 
     def __init__(self, *args, **kwargs):
-        super.__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["username"].widget.attrs = {"placeholder": "username"}
         self.fields["email"].required = True
         self.fields["email"].widget.attrs = {"placeholder": "email"}

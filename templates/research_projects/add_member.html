@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{# -- タイトル -- #}
+{% block title%}論文追加{% endblock %}
+{% block extra_css %}<link href="{% static 'css/select2.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/select2.min.js' %}"></script>
+{%endblock %}
+
+
+
+{# --メインコンテンツ --#}
+{% block main %}
+    <main>
+        {{ user }}
+        <div>
+            <a href="{% url 'papers:import_paper' %}">論文が見つからないとき</a>
+        </div>
+        
+        <form method="post">
+            <section id="create_project_form" class="container mb-4">
+                {% csrf_token %}
+  
+                {{ form.as_p }}
+            </section>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="{% url 'accounts:index' %}" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </main>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
+{% endblock %}

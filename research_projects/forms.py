@@ -1,5 +1,4 @@
 from django import forms
-from dal import autocomplete
 from .models import Project, PapersIndices
 
 
@@ -7,8 +6,13 @@ from .models import Project, PapersIndices
 #     class Meta:
 #         model = Project
 
-class AddPaperForm(forms.ModelForm):
+# class AddPaperForm(forms.ModelForm):
+#     class Meta:
+#         model = PapersIndices
+#         fields = ["paper",]
+#         widgets = {"paper": autocomplete.ModelSelect2(url="research_projects:paper-autocomplete"),}
+
+class AddMemberForm(forms.ModelForm):
     class Meta:
-        model = PapersIndices
-        fields = ["paper",]
-        widgets = {"paper": autocomplete.ModelSelect2(url="research_projects:paper-autocomplete"),}
+        model = Project
+        fields = ["members"]

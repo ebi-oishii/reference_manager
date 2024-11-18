@@ -2,15 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from django.http.response import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.views import View
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login, authenticate
 from django.urls import reverse, reverse_lazy
 
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, CreateView
 from django.contrib.auth import views as auth_views
 
-#from .forms import LoginForm
+from .forms import RegisterForm
 import base58
 from .models import CustomUser
+
 # Create your views here.
 
 
@@ -35,9 +36,32 @@ login = LoginView.as_view()
 
 
 class LogoutView(auth_views.LogoutView):
-    next_page = "/accounts/"
+    next_page = "accounts:login"
 
 logout = LogoutView.as_view()
+
+
+class RegisterView(CreateView):
+    model = CustomUser
+    template_name = 'accounts/register.html'
+    form_class = RegisterForm
+
+    def get_success_url(self):
+        return reverse_lazy("accounts:profile", kwargs={"profile_username": self.object.username})
+    
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        
+        # パスワードをハッシュ化して保存
+        user.set_password(form.cleaned_data["password"])  # ハッシュ化
+        user.save()  # ユーザーをデータベースに保存
+
+        # 認証後にログイン
+        auth_user = authenticate(username=form.cleaned_data["username"], password=form.cleaned_data["password"])
+        login(self.request, auth_user)
+        return super().form_valid(form)
+
+register = RegisterView.as_view()
 
 
 class ProfileView(DetailView):

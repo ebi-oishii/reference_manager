@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, ListView
 from django.db.models import Max
 from .models import Project, Post, PapersIndices
+from .forms import AddMemberForm
 from papers.models import Paper
-from .forms import AddPaperForm
-from dal import autocomplete
 from django.urls import reverse_lazy
+
 
 # Create your views here.
 
@@ -16,7 +16,7 @@ class CreateProjectView(CreateView):
     
     def get_success_url(self):
         # success_url を動的に取得して返す
-        return reverse_lazy('accounts:profile', kwargs={'profile_username': self.request.user.username})
+        return reverse_lazy('research_projects:project_detail', kwargs={'project_id': self.object.project_id})
     
     def form_valid(self, form):
         project = form.save(commit=False)
@@ -39,6 +39,26 @@ class ProjectDetailView(DetailView):
         return get_object_or_404(Project, project_id=project_id)
 
 project_detail = ProjectDetailView.as_view()
+
+
+class AddMemberView(UpdateView):
+    model = Project
+    template_name = "research_projects/add_member.html"
+    form_class = AddMemberForm
+
+    def get_project(self):
+        project_id = self.kwargs.get("project_id")
+        return get_object_or_404(Project, project_id=project_id)
+    
+    def get_object(self):
+        return self.get_project()
+
+    def get_success_url(self):
+        project = self.get_project()
+        return reverse_lazy('research_projects:project_detail', kwargs={'project_id': project.project_id})
+
+add_member = AddMemberView.as_view()
+
 
 class AddPostView(CreateView):
     model = Post
@@ -63,19 +83,9 @@ class AddPostView(CreateView):
 add_post = AddPostView.as_view()
 
 
-class PaperAutoComplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        qs = Paper.objects.all()
-        if self.q:
-            qs = qs.filter(name__icontains=self.q)
-        return qs        
-
-paper_auto_complete = PaperAutoComplete.as_view()
-
-
 class AddPaper(CreateView):
     model = PapersIndices
-    form_class = AddPaperForm
+    fields = ["paper",]
     template_name = "research_projects/add_paper.html"
 
     def get_project(self):
@@ -123,3 +133,17 @@ class EditCitationView(UpdateView):
         return reverse_lazy('research_projects:project_detail', kwargs={"project_id": project.project_id})
     
 edit_citation = EditCitationView.as_view()
+
+
+class ProjectListView(ListView):
+    template_name = "research_projects/project_list.html"
+    context_object_name = "projects"
+    queryset = Project.objects.filter(is_public=True)
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['numbers'] = [1, 2, 3, 4]  # 配列をコンテキストに追加
+        return context
+
+project_list = ProjectListView.as_view()

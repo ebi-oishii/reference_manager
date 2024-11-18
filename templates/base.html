@@ -17,8 +17,17 @@
         {% block header %}
         <header>
             <div class="inner">
-                <h1><a href="{% url 'accounts:index' %}">文献・プロジェクト管理</a></h1>
+                <h1><a href="{% url 'top_page' %}">文献・プロジェクト管理</a></h1>
                 ヘッダー領域<br>
+                <div id="top_right">
+                    <div class="button">
+                        {% if user.is_authenticated %}
+                        <span class="now_login">ログイン中</span>
+                        {% else %}
+                        <a href="{% url 'accounts:login' %}">ログイン</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -26,10 +35,16 @@
         {% block menu_bar %}
         <nav id="menu_bar">
             <ul class="inner clearfix">
-                <li><a href="{% url 'accounts:index' %}">TOPページ</a></li>
-                <li><a href="">hogehoge</a></li>
-                <li><a href="">hugahuga</a></li>
-                <li><a href="">piyopiyo</a></li>
+                <li><a href="{% url 'top_page' %}">TOPページ</a></li>
+                <li><a href="{% url 'research_projects:project_list' %}">公開プロジェクト一覧</a></li>
+                <li><a href="{% url 'papers:paper_list' %}">文献一覧</a></li>
+                <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'accounts:profile' profile_username=user.username %}">
+                {% else %}
+                <a href="{% url 'accounts:login' %}">
+                {% endif %}
+                マイページ</a></li>
             </ul>
         </nav>
         {% endblock %}
@@ -38,21 +53,26 @@
             {% block side_menu %}
             <nav id="side_menu">
                 <ul class="main_menu">
-                    <li class="heading"><a href="{% url 'accounts:index' %}">TOPページ</a></li>
-                    <li class="heading"><a href="#l">hoge</a></li>
+                    <li class="heading"><a href="{% url 'top_page' %}">TOPページ</a></li>
+                    <li class="heading"><a href="#l">マイプロジェクト</a></li>
                     <li class="menu_element"><a href="#">hoge</a></li>
                     <li class="menu_element"><a href="#">hoge</a></li>
                     <li class="menu_element"><a href="#">hoge</a></li>
                     <li class="menu_element"><a href="#">hoge</a></li>
-                    <li class="heading"><a href="">hoge</a></li>
-                    <li class="menu_element"><a href="#">hoge</a></li>
+                    <li class="heading"><a href="{% url 'research_projects:project_list' %}">公開プロジェクト一覧</a></li>
                     <li class="menu_element"><a href="#">a</a></li>
-                    <li class="heading"><a href="enquiry.html">hoge</a></li>
-                    <li class="heading"><a href="manage.html">hoge</a></li>
+                    <li class="heading"><a href="{% url 'papers:paper_list' %}">文献一覧</a></li>
+                    <li class="heading">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'accounts:profile' profile_username=user.username %}">
+                        {% else %}    
+                        <a href="{% url 'accounts:login' %}">
+                        {% endif %}
+                        マイページ</a></li>
                 </ul>
             </nav>
             {% endblock %}
-            <div class="main">
+            <div id="main">
                 {% block main %}
                 メイン文
                 {% endblock %}

@@ -18,6 +18,9 @@
     <h1>{{ project.name }}<br></h1>
     <h2><a href="{{ project.project_url }}">プロジェクトURL</a></h2>
     <h2>参加メンバー<br></h2>
+    {% if request.user in project.members.all %}
+    <a href="{% url 'research_projects:add_member' project_id=project.project_id %}">メンバー追加</a>
+    {% endif %}
     {% for member in project.members.all %}
     <a href="{% url 'accounts:profile' member.username %}"> {{ member.username }} </a>
     {% endfor %}

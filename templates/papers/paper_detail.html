@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# -- タイトル -- #}
+{% block title %}Paper Detail: {{ paper.title }}{% endblock %}
+
+{# -- CSS -- #}
+{% block extra_css %}
+{% endblock %}
+
+{# --メインコンテンツ --#}
+{% block main %}
+    <h1>{{ paper.title }}<br></h1>
+    <a href="{% url 'accounts:index' %}" class="btn btn-secondary">Back</a>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
+{% endblock %}
