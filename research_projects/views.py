@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, DetailView, UpdateView
 from django.db.models import Max
 from .models import Project, Post, PapersIndices
+from papers.models import Paper
+from .forms import AddPaperForm
+from dal import autocomplete
 from django.urls import reverse_lazy
 
 # Create your views here.
@@ -60,10 +63,20 @@ class AddPostView(CreateView):
 add_post = AddPostView.as_view()
 
 
+class PaperAutoComplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Paper.objects.all()
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+        return qs        
+
+paper_auto_complete = PaperAutoComplete.as_view()
+
+
 class AddPaper(CreateView):
     model = PapersIndices
+    form_class = AddPaperForm
     template_name = "research_projects/add_paper.html"
-    fields = ["paper"]
 
     def get_project(self):
         project_id = self.kwargs.get("project_id")
@@ -77,10 +90,11 @@ class AddPaper(CreateView):
         paper_index = form.save(commit=False)
         project = self.get_project()
         paper_index.project = project
-        try:
-            i = PapersIndices.objects.filter(project=project).aggregate(Max("index"))["index__max"] + 1
-        except PapersIndices.DoesNotExist:
+        i = PapersIndices.objects.filter(project=project).aggregate(Max("index"))["index__max"]
+        if i is None:
             i = 1
+        else:
+            i += 1
         paper_index.index = i
         paper_index.save()
         return super().form_valid(form)

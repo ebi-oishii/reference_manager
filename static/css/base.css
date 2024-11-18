@@ -1,0 +1,242 @@
+@charset "utf-8";
+/*すべての要素に対する余白初期設定*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, main, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video{
+	margin:0;
+	padding:0;
+	border: 0;
+}
+/*デフォルト文字設定*/
+body{
+    color:#000000;
+}
+/*リストまーかを非表示*/
+ul, ol{
+    list-style-type:none;
+}
+/*	clearfix
+------------------------------*/
+.clearfix:after {/*for modern browser*/
+   content: "";
+   display: block;
+   clear: both;
+}
+
+.clearfix { *zoom:1; } /*for IE6,IE7*/
+
+/*---------------------------------------------------------*/
+/*上部余白*/
+body{
+    border-top: 5px #ffffff solid;
+}
+
+
+
+/*コンテンツ（拝啓除く）のはば*/
+.inner{
+    width: 940px;
+    margin:0 auto;
+}
+
+/*---------------------------------------------------------*/
+#back_to_top{
+    background-color: #eeeeee;
+    width: 75px;
+    height: 75px;
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    opacity: 0.6;
+}
+
+#back_to_top a{
+    display: block;
+    height: 75px;
+    width: 75px;
+    transition: 0.1s;
+}
+
+#back_to_top a:hover{
+    background-color: #000000;
+    color: #ffffff;
+}
+
+#btp_text{
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    text-decoration: none;
+    color: gray;
+}
+
+/*---------------------------------------------------------*/
+/*ヘッダ領域*/
+header{
+    background-color: #ffffff;
+}
+
+header a{
+    text-decoration: none;
+    color: #000000;
+}
+
+h1{
+    color:#000000;
+    text-align: center;
+}
+
+/*---------------------------------------------------------*/
+/*メニューバーの設定*/
+#menu_bar{
+    background-color: #000000;
+    margin-bottom: 50px;
+    min-width: 1280px;
+}
+
+#menu_bar ul{
+}
+
+#menu_bar li{
+    float: left;
+    width: 234px;
+    border-right:#fff 1px solid;
+}
+
+#menu_bar li:first-child{
+    width: 233px;
+    border-left:#fff 1px solid;
+}
+
+#menu_bar a{
+    display: block;
+    padding: 10px 0;
+    text-align: center;
+    text-decoration: none;
+    color:#ffffff;
+}
+
+#menu_bar a:hover{
+    background-color: gray;
+}
+
+
+
+/*---------------------------------------------------------*/
+
+
+/*コンテンツと左目次*/
+.contents{
+    overflow:hidden;
+    width: 1280px;
+    margin: 0 auto;
+}
+
+/*---------------------------------------------------------*/
+
+/*左目次*/
+#side_menu{
+    width: 250px;
+    float: left;
+}
+
+#side_menu ul{
+    border: 3px #000000 solid;
+    border-radius: 10px;
+    background-color: #000000;
+}
+
+#side_menu li{
+    padding: 5px 0;
+}
+
+#side_menu li:last-child{
+    border:0;
+}
+
+.heading{
+    background-color: #000000;
+    color: #ffffff;
+    border-bottom: 2px #eeeeee solid;
+}
+
+.heading a{
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.menu_element{
+    background-color: #eeeeee;
+}
+
+.menu_element a{
+    color: #000000;    
+}
+
+/*本文*/
+#main{
+    width: 900px;
+    float: right;
+}
+
+.titlef{
+    color: #ffffff;
+    background-color: #000000;
+    border: 3px #000000 solid;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.title{
+    color: #ffffff;
+    background-color: #000000;
+    border: 3px #000000 solid;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-top: 15px;
+}
+
+.text{
+    border: 3px #000000 solid;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.more{
+    text-align: right;
+    margin-right: 20px;
+}
+
+.more a{
+    color: #000000;
+}
+
+/*---------------------------------------------------------*/
+/*振った領域*/
+footer{
+    margin-top: 50px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 75%;
+    margin-bottom: 50px;
+    min-width: 1280px;
+}
+
+footer .inner{
+    
+}
+
+#information{
+    font-size: 100%;
+    text-align: right;
+}
