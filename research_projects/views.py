@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, DetailView, UpdateView, ListView
 from django.db.models import Max
 from .models import Project, Post, PapersIndices
-from .forms import AddMemberForm
+from .forms import AddMemberForm, SearchForm
 from papers.models import Paper
 from django.urls import reverse_lazy
 
@@ -141,9 +141,37 @@ class ProjectListView(ListView):
     queryset = Project.objects.filter(is_public=True)
     paginate_by = 20
 
+    def get_queryset(self):
+        form = SearchForm(self.request.GET)
+
+        if form.is_valid():
+            query = form.cleaned_data.get("query")
+            if query:
+                queryset = Project.objects.filter(is_public=True)
+                queryset = queryset.filter(name__icontains=query) | queryset.filter(description__icontains=query) | queryset.filter(short_project_id__icontains=query) | queryset.filter(project_id__icontains=query)
+            else:
+                queryset = Project.objects.filter(is_public=True)
+
+        else:
+            queryset = Project.objects.filter(is_public=True, bookmark_user=self.request.user)
+        
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        #ページネーションのために使う
         context['numbers'] = [1, 2, 3, 4]  # 配列をコンテキストに追加
+
+        context["form"] = SearchForm(self.request.GET or None)
+        if "query" in self.request.GET:
+            query = self.request.GET.get("query", "").strip()
+            if query:
+                context["message"] = f"検索結果： {query}"
+            else:
+                context["message"] = "全ての結果" 
+        else:
+            context["message"] = "ブックマークされたプロジェクト"
         return context
 
 project_list = ProjectListView.as_view()
+

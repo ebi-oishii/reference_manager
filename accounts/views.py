@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.views import View
@@ -10,7 +10,7 @@ from django.contrib.auth import views as auth_views
 
 from .forms import RegisterForm
 import base58
-from .models import CustomUser
+from .models import CustomUser, Collaboration
 
 # Create your views here.
 
@@ -86,3 +86,20 @@ class ProfileView(DetailView):
         return context
     
 profile = ProfileView.as_view()
+
+
+class SendCollaborationRequestView(View):
+    def get(self, request, username):
+        to_user = get_object_or_404(CustomUser, username=username)
+
+        existing_request = Collaboration.objects.filter(from_user=request.user, to_user=to_user).first()
+        if existing_request:
+            if existing_request.status == "accepted":
+                return redirect("accounts:profile", kwargs={"username": request.user.username})
+            else:
+                return redirect("accounts:profile", kwargs={"username": request.user.username})
+            
+        Collaboration.objects.create(from_user=request.user, to_user=to_user, status="pending")
+        return redirect("accounts:profile", kwargs={"username": request.user.username})
+
+send_collaboration_request = SendCollaborationRequestView.as_view()

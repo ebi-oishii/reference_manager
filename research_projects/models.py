@@ -19,6 +19,7 @@ class Project(models.Model):
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
     is_public = models.BooleanField(verbose_name="is_public", default=False)
     is_visible = models.BooleanField(verbose_name="is_visible", default=True)
+    bookmark_user = models.ManyToManyField(CustomUser, verbose_name="bookmark_user", related_name="bookmark_project")
 
     def __str__(self):
         return self.name

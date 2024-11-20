@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from accounts.models import CustomUser
 # Create your models here.
 
 #publisher class
@@ -47,6 +48,7 @@ class Paper(models.Model):
     arxiv = models.TextField(verbose_name="arxiv_id", blank=True, null=True, unique=True)
     doi = models.TextField(verbose_name="doi", blank=True, null=True, unique=True)
     published_date = models.DateField(verbose_name="published_date")
+    bookmark_user = models.ManyToManyField(CustomUser, verbose_name="bookmark_user", related_name="bookmark_paper")
 
     def __str__(self):
         return self.title

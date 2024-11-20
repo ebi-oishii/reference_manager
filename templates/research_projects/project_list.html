@@ -16,6 +16,21 @@
 {% block main %}
     <div class="titleb"><h2>公開プロジェクト一覧</h2>
     </div>
+    <div id="search">
+        <form method="GET" action="{% url "research_projects:project_list" %}">
+            <p class="query">
+            {{ form.query }}
+            </p>
+            <button type="submit">検索</button>
+        </form>
+        <p class="new_project">
+        <a href="{% url "research_projects:create_project" %}">新規プロジェクト作成</a>
+        </p>
+    </div>
+
+    <div class="titlef">
+        {{ message }}
+    </div>
     <div id="project_list">
         {% if projects %}
         {% for project in projects %}

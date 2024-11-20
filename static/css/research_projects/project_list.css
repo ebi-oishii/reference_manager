@@ -6,10 +6,107 @@
     margin-bottom: 20px;
 }
 
-#project_list{
+#search{
     padding: 30px;
     border: 2px #000000 solid;
     border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 50px;
+}
+
+/* #search .pinfo{
+    float: left;
+}
+
+#search input[type="text"], #bbs input[type="password"]{
+    background: #eeeeee;
+    display: block;
+    margin: 10px 25px;
+    text-align: center;
+    border: 2px gray solid;
+    padding: 10px 5px;
+    width: 200px;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+    color: gray;
+}
+
+#search input[type="text"]:focus, #bbs input[type="password"]:focus{
+    border-color: #000000;
+    background-color: #ffffff;
+    color: #000000;
+} */
+
+#search input{
+    background: #eeeeee;
+    display: block;
+    margin: 10px 25px;
+    text-align: left;
+    border: 2px gray solid;
+    padding: 10px 5px;;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+    color: gray;
+    width: 400px;
+    font-size: 100%;
+    line-height: 1.5em;
+    float: left;
+}
+
+#search input:focus{
+    border-color: #000000;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+#search button[type="submit"]{
+    background: #eeeeee;
+    margin: 10px 25px;
+    text-align: center;
+    border: 2px gray solid;
+    padding: 14px 40px;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+    color: gray;
+    cursor: pointer;    
+}
+
+#search button[type="submit"]:hover{
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;    
+}
+
+#search .new_project a{
+    float: left;
+    background: #eeeeee;
+    margin: 10px 25px;
+    text-align: center;
+    border: 2px gray solid;
+    padding: 14px 40px;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+    color: gray;
+    cursor: pointer; 
+    width: 160px;
+    text-decoration: none;
+}
+
+#search .new_project a:hover{
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;    
+}
+
+#project_list{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
     margin-bottom: 30px;
 }
 
