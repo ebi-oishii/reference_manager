@@ -27,6 +27,10 @@
         </form>
         {% else %}
         <p>人のページだよ</p>
+        <form method="post" class="request" action="{% url 'accounts:send_collaboration_request' to_user_id=profile_user.user_id %}">
+            {% csrf_token %}
+            <button type="submit">友人申請</button>
+        </form>
         {% endif %}
 
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import HttpResponseRedirect
 from django.template.response import TemplateResponse
+from django.http import JsonResponse
 from django.views import View
 from django.contrib.auth import login, authenticate
 from django.urls import reverse, reverse_lazy
@@ -89,17 +90,35 @@ profile = ProfileView.as_view()
 
 
 class SendCollaborationRequestView(View):
-    def get(self, request, username):
-        to_user = get_object_or_404(CustomUser, username=username)
+    def post(self, request, *args, **kwargs):
+        to_user = get_object_or_404(CustomUser, user_id=kwargs["to_user_id"])
 
-        existing_request = Collaboration.objects.filter(from_user=request.user, to_user=to_user).first()
-        if existing_request:
-            if existing_request.status == "accepted":
-                return redirect("accounts:profile", kwargs={"username": request.user.username})
-            else:
-                return redirect("accounts:profile", kwargs={"username": request.user.username})
-            
-        Collaboration.objects.create(from_user=request.user, to_user=to_user, status="pending")
-        return redirect("accounts:profile", kwargs={"username": request.user.username})
+        collaboration, created = Collaboration.objects.get_or_create(from_user=request.user , to_user=to_user)
+        if created:
+            return JsonResponse({"message": "既に送信されています"})
+        else:
+            return JsonResponse({"message": "送信されました"})
 
 send_collaboration_request = SendCollaborationRequestView.as_view()
+
+
+class ManageCollaborationRequestView(View):
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action")
+        collaboration_request = get_object_or_404(Collaboration, request_id=kwargs.get("request_id"))
+        
+        if action == "accept":
+            collaboration_request.status = "accepted"
+            collaboration_request.save()
+            return JsonResponse({"message": "request accepted"})
+        
+        elif action == "reject":
+            collaboration_request.delete()
+            return JsonResponse({"message": "request rejected"})
+        
+        else:
+            return JsonResponse({"message": "invalid response"})
+        
+manage_collaboration_request = ManageCollaborationRequestView.as_view()
+
+            

@@ -15,15 +15,31 @@
 
 {# --メインコンテンツ --#}
 {% block main %}
+
     <h1>{{ project.name }}<br></h1>
     <h2><a href="{{ project.project_url }}">プロジェクトURL</a></h2>
     <h2>参加メンバー<br></h2>
+
     {% if request.user in project.members.all %}
-    <a href="{% url 'research_projects:add_member' project_id=project.project_id %}">メンバー追加</a>
+    <a href="{% url 'research_projects:add_member' project_id=project.project_id %}">メンバー追加</a><br>
+
+    <form method="post" action="{% url 'research_projects:public_switch' project_id=project.project_id %}">
+        {% csrf_token %}
+        <input class="toggle" type="checkbox" name="toggle_public">公開</input>
+        <input type="submit" value="設定変更"></input>
+    </form>
+    <form method="post" action="{% url 'research_projects:visible_switch' project_id=project.project_id %}">
+        {% csrf_token %}
+        <input class="toggle" type="checkbox" name="toggle_visible">可視</input>
+        <input type="submit" value="設定変更"></input>
+    </form>
+
     {% endif %}
+
     {% for member in project.members.all %}
     <a href="{% url 'accounts:profile' member.username %}"> {{ member.username }} </a>
     {% endfor %}
+
     <br><br>
     {% if request.user in project.members.all %}
     <a href="{% url 'research_projects:create_post' project.project_id %}">Add post</a><br>

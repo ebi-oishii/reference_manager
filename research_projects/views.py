@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import CreateView, DetailView, UpdateView, ListView
+from django.views.generic import CreateView, DetailView, UpdateView, ListView, FormView
 from django.db.models import Max
+from django.http import JsonResponse
+from django.views import View
 from .models import Project, Post, PapersIndices
 from .forms import AddMemberForm, SearchForm
 from papers.models import Paper
@@ -41,7 +43,7 @@ class ProjectDetailView(DetailView):
 project_detail = ProjectDetailView.as_view()
 
 
-class AddMemberView(UpdateView):
+class AddMemberView(FormView):
     model = Project
     template_name = "research_projects/add_member.html"
     form_class = AddMemberForm
@@ -52,6 +54,18 @@ class AddMemberView(UpdateView):
     
     def get_object(self):
         return self.get_project()
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        kwargs["project"] = self.get_project()
+        return kwargs
+
+    def form_valid(self, form):
+        project = self.get_project()
+        members = form.cleaned_data["members"]
+        project.members.add(*members)
+        return super().form_valid(form)
 
     def get_success_url(self):
         project = self.get_project()
@@ -175,3 +189,40 @@ class ProjectListView(ListView):
 
 project_list = ProjectListView.as_view()
 
+
+class PublicSwitchView(View):
+    def post(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, project_id=kwargs.get("project_id"))
+        
+        if request.POST.get("toggle_public") == "on":
+            project.is_public = True
+            project.save()
+            return JsonResponse({"message": "プロジェクトを公開に切り替えました"})
+        
+        elif request.POST.get("toggle_public") == None:
+            project.is_public = False
+            project.save()
+            return JsonResponse({"message": "プロジェクトを非公開に切り替えました"})
+        
+        else:
+            return JsonResponse({"message": "無効なリクエストです"})
+        
+public_switch = PublicSwitchView.as_view()
+
+
+class VisibleSwitchView(View):
+    def post(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, project_id=kwargs.get("project_id"))
+        
+        if request.POST.get("toggle_visible") == "on":
+            project.is_visible = True
+            project.save()
+            return JsonResponse({"message": "プロジェクトを可視に切り替えました"})
+        
+        elif request.POST.get("toggle_visible") == None:
+            project.is_visible = False
+            project.save()
+            return JsonResponse({"message": "プロジェクトを不可視に切り替えました"})
+
+        
+visible_switch = VisibleSwitchView.as_view()

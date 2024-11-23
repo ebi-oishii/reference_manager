@@ -17,11 +17,14 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         if not self.short_user_id:
             self.short_user_id = base58.b58encode(self.user_id.bytes).decode('utf-8')[:8]
+        return super().save(*args, **kwargs)
 
 class Collaboration(models.Model):
+    request_id = models.UUIDField(verbose_name="request_id", default=uuid.uuid4, primary_key=True)
     from_user = models.ForeignKey(CustomUser, related_name="collaboration_from", on_delete=models.CASCADE)
     to_user = models.ForeignKey(CustomUser, related_name="collaboration_to", on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("accepted", "Accepted"), ("rejected", "Rejected")], default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "collaboration"

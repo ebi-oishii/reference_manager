@@ -16,14 +16,10 @@
 {% block main %}
     <main>
         {{ user }}
-        <div>
-            <a href="{% url 'papers:import_paper' %}">論文が見つからないとき</a>
-        </div>
         
         <form method="post">
-            <section id="create_project_form" class="container mb-4">
+            <section id="add_member_form" class="container mb-4">
                 {% csrf_token %}
-  
                 {{ form.as_p }}
             </section>
             <div class="mt-3">
