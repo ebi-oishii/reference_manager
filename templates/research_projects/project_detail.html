@@ -6,42 +6,47 @@
 
 {# -- CSS -- #}
 {% block extra_css %}
-    <style type="text/css">
-        main > section > .mx-auto {
-            max-width: 400px;
-        }
-    </style>
+    <link href={% static 'css/research_projects/project_detail.css' %} rel="stylesheet" media="all">
 {% endblock %}
 
 {# --メインコンテンツ --#}
 {% block main %}
-
-    <h1>{{ project.name }}<br></h1>
+    <div class="titleb">
+        <h2>
+        {{ project.name }}
+        </h2>
+    </div>
+    <div id="project_detail">
+    {% if project.project_url %}
     <h2><a href="{{ project.project_url }}">プロジェクトURL</a></h2>
-    <h2>参加メンバー<br></h2>
-
-    {% if request.user in project.members.all %}
-    <a href="{% url 'research_projects:add_member' project_id=project.project_id %}">メンバー追加</a><br>
-
-    <form method="post" action="{% url 'research_projects:public_switch' project_id=project.project_id %}">
-        {% csrf_token %}
-        <input class="toggle" type="checkbox" name="toggle_public">公開</input>
-        <input type="submit" value="設定変更"></input>
-    </form>
-    <form method="post" action="{% url 'research_projects:visible_switch' project_id=project.project_id %}">
-        {% csrf_token %}
-        <input class="toggle" type="checkbox" name="toggle_visible">可視</input>
-        <input type="submit" value="設定変更"></input>
-    </form>
-
     {% endif %}
 
+    <div id="settings">
+        <form method="post" action="{% url 'research_projects:public_switch' project_id=project.project_id %}">
+            {% csrf_token %}
+            <input class="toggle" type="checkbox" name="toggle_public" {% if project.is_public %} checked="checked" {% endif %}>公開</input>
+            <input type="submit" value="設定変更"></input>
+        </form>
+        <form method="post" action="{% url 'research_projects:visible_switch' project_id=project.project_id %}">
+            {% csrf_token %}
+            <input class="toggle" type="checkbox" name="toggle_visible" {% if project.is_visible %} checked="checked" {% endif %}>可視</input>
+            <input type="submit" value="設定変更"></input>
+        </form>
+    </div>
+    
+    <div id="members">
     {% for member in project.members.all %}
     <a href="{% url 'accounts:profile' member.username %}"> {{ member.username }} </a>
     {% endfor %}
 
-    <br><br>
     {% if request.user in project.members.all %}
+    <a href="{% url 'research_projects:add_member' project_id=project.project_id %}">メンバー追加</a><br>
+    {% endif %}
+    </div>
+
+
+    {% if request.user in project.members.all %}
+    <div id="posts">
     <a href="{% url 'research_projects:create_post' project.project_id %}">Add post</a><br>
     {% endif %}
     {% for post in project.posts.all %}
@@ -50,7 +55,10 @@
     {{ post.posted_on }}
     <br>
     {% endfor %}
-    <h2>Citations</h2>
+    </div>
+
+    <div id="references">
+    <h2>References</h2>
     {% if request.user in project.members.all %}
     <a href="{% url 'research_projects:add_paper' project.project_id %}">Add paper</a><br>
     {% endif %}
@@ -59,12 +67,10 @@
     {% if request.user in project.members.all %}
     {{ paper_index.index }} {{ paper_index.paper.title }} {% for author in paper_index.paper.authors.all %} {{ author.first_name }} {{author.last_name}} {% endfor %} {{ paper_index.paper.arxiv }} {% if paper_index.description %} {{ paper_index.description }} {% endif %}
     <br>
-    <p><a href="{% url 'research_projects:edit_citation' project.project_id paper_index.index %}"> Edit</a></p>
+    <p><a href="{% url 'research_projects:edit_citation' project.project_id paper_index.index %}">Edit</a></p>
     {% else %}
-
     {% endif %}
     {% endfor %}
-    <a href="{% url 'accounts:index' %}" class="btn btn-secondary">Back</a>
 {% endblock %}
 
 {# -- フッターは表示しない -- #}

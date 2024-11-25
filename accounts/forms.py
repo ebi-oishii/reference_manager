@@ -20,3 +20,12 @@ class RegisterForm(forms.ModelForm):
         self.fields["username"].widget.attrs = {"placeholder": "username"}
         self.fields["email"].required = True
         self.fields["email"].widget.attrs = {"placeholder": "email"}
+
+
+class UserSearchForm(forms.Form):
+    query = forms.CharField(max_length=100, required=False, label='query')
+
+
+class ManageCollaborationRequestForm(forms.Form):
+    CHOICES = [("accept", "Accept"), ("reject", "Reject")]
+    choice = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect, label="応答")

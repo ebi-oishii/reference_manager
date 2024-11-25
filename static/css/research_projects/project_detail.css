@@ -1,0 +1,42 @@
+.titleb{
+    color: #ffffff;
+    background-color: #000000;
+    border: 3px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+#project_detail{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+#settings{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+#members{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+#posts{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+#references{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}

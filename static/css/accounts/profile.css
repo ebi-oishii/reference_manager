@@ -1,0 +1,22 @@
+.titleb{
+    color: #ffffff;
+    background-color: #000000;
+    border: 3px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+#management{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+#project_list{
+    padding: 30px;
+    border: 2px #000000 solid;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-bottom: 30px;
+}

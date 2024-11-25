@@ -6,34 +6,45 @@
 
 {# -- CSS -- #}
 {% block extra_css %}
-    <style type="text/css">
-        main > section > .mx-auto {
-            max-width: 400px;
-        }
-    </style>
+    <link href={% static 'css/accounts/profile.css' %} rel="stylesheet" media="all">
 {% endblock %}
 
 {# --メインコンテンツ --#}
 {% block main %}
     <main>
+        <div class="titleb">
         {{ profile_user }}のページ
+        </div>
         {% if is_self %}
-        <p>自分のページだよ</p>
-        <p>プロジェクト作成</p>
-        <a href="{% url 'research_projects:create_project' %}">CLICK!</a>
+        <div id="management">
+        <a href="{% url 'accounts:collaboration_request_list' username=user.username %}">共同研究申請処理</a><br>
+        <a href="{% url 'research_projects:create_project' %}">プロジェクト作成</a>
         <form method="post" class="btn btn-secondary" action="{% url 'accounts:logout' %}">
             {% csrf_token %}
-            <button type="submit">ログアウト!</button>
+            <button type="submit">ログアウト</button>
         </form>
+        </div>
         {% else %}
-        <p>人のページだよ</p>
+
+
+        {% if profile_user.user_id in collaborator_list %}
+        既に共同研究者です
+        {% elif profile_user.user_id in from_pending_collaborator_list %}
+        <a href="{% url 'accounts:manage_collaboration_request' username=user.username %}">リクエストに応答</a>
+        {% elif profile_user.user_id in to_pending_collaborator_list %}
+        現在申請中
+        {% else %}
         <form method="post" class="request" action="{% url 'accounts:send_collaboration_request' to_user_id=profile_user.user_id %}">
             {% csrf_token %}
-            <button type="submit">友人申請</button>
+            <button type="submit">共同研究申請</button>
         </form>
         {% endif %}
 
-
+        {% endif %}
+        <div class="titlef">
+            参加プロジェクト一覧
+        </div>
+        <div id="project_list">
         {% for project in profile_user_projects.all %}
         {% if project.is_visible or user in project.members.all %}
         {% if project.is_public or user in project.members.all %}
@@ -46,6 +57,7 @@
         <br>
         {% endif %}
         {% endfor %}
+        </div>
     </main>
 {% endblock %}
 

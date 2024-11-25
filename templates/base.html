@@ -55,12 +55,13 @@
                 <ul class="main_menu">
                     <li class="heading"><a href="{% url 'top_page' %}">TOPページ</a></li>
                     <li class="heading"><a href="#l">マイプロジェクト</a></li>
-                    <li class="menu_element"><a href="#">hoge</a></li>
-                    <li class="menu_element"><a href="#">hoge</a></li>
-                    <li class="menu_element"><a href="#">hoge</a></li>
-                    <li class="menu_element"><a href="#">hoge</a></li>
+                    {% if user.is_authenticated %}
+                        {% for project in latest_projects %}
+                        <li class="menu_element"><a href="#">{{project.name}}</a></li>
+                        {% endfor %}
+                    {% endif %}
                     <li class="heading"><a href="{% url 'research_projects:project_list' %}">公開プロジェクト一覧</a></li>
-                    <li class="menu_element"><a href="#">a</a></li>
+                    <li class="heading"><a href="{% url 'accounts:user_search' %}">ユーザー検索</a></li>
                     <li class="heading"><a href="{% url 'papers:paper_list' %}">文献一覧</a></li>
                     <li class="heading">
                         {% if user.is_authenticated %}

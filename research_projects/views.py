@@ -226,3 +226,5 @@ class VisibleSwitchView(View):
 
         
 visible_switch = VisibleSwitchView.as_view()
+
+
