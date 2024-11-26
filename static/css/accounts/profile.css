@@ -11,6 +11,64 @@
     border: 2px #000000 solid;
     border-radius: 10px;
     margin-bottom: 30px;
+    display: flex;
+    justify-content: center; /* 水平方向の中央揃え */
+    align-items: center; /* 垂直方向の中央揃え */
+    gap: 10px; /* アイテム間の余白 */
+    height: 50px; 
+}
+
+#management .done{
+    background: #eeeeee;
+    margin: 10px 25px;
+    text-align: center;
+    border: 2px gray solid;
+    padding: 14px 40px;
+    outline: none;
+    border-radius: 24px;
+    color: gray;
+    display: inline-block;
+}
+
+#management a{
+    background: #eeeeee;
+    margin: 10px 25px;
+    text-align: center;
+    border: 2px gray solid;
+    padding: 14px 40px;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+    color: gray;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#management a:hover{
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;    
+}
+
+#management button[type="submit"]{
+    background: #eeeeee;
+    margin: 10px 25px;
+    text-align: center;
+    border: 2px gray solid;
+    padding: 14px 40px;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+    color: gray;
+    cursor: pointer;    
+
+}
+
+#management button[type="submit"]:hover{
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;    
 }
 
 #project_list{
@@ -19,4 +77,64 @@
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     margin-bottom: 30px;
+}
+
+.project{
+    margin: 15px;
+    border: 2px gray solid;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+#pagination{
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    cursor: default;
+}
+
+.page_num{
+    display: inline;
+    
+}
+
+.page_num a{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    text-decoration: none;
+    background-color: gray;
+    color: #ffffff;
+    padding: 10px 10px;
+    border-radius: 50%;
+    font-size: 150%;
+    line-height: 20px;
+}
+
+.page_num .dum{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    text-decoration: none;
+    background-color: gray;
+    color: #ffffff;
+    padding: 10px 10px;
+    border-radius: 50%;
+    font-size: 150%;
+    line-height: 20px;
+    cursor: default;
+}
+
+.page_num .current_page{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    text-decoration: none;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 10px 10px;
+    border-radius: 50%;
+    font-size: 150%;
+    line-height: 20px;
+    cursor: default;
 }

@@ -7,7 +7,7 @@
 
 {# -- CSS -- #}
 {% block extra_css %}
-    <link href={% static 'css/research_projects/project_list.css' %} rel="stylesheet" media="all">
+    <link href={% static 'css/accounts/collaboration_request_list.css' %} rel="stylesheet" media="all">
 {% endblock %}
 
 {# --メインコンテンツ --#}
@@ -15,10 +15,10 @@
     <div class="titleb"><h2>共同研究申請リスト</h2>
     </div>
 
-    <div id="project_list">
+    <div id="request_list">
         {% if collaboration_requests %}
         {% for collaboration_request in collaboration_requests %}
-        <div class="project">
+        <div class="request">
             {{ collaboration_request.from_user.username }}
             <form method="post" action="{% url 'accounts:manage_collaboration_request' request_id=collaboration_request.request_id response="accept" %}">
                 {% csrf_token %}
@@ -31,7 +31,7 @@
         </div>
         {% endfor %}
         {% else %}
-        <div class="project">
+        <div class="request">
             リクエストがありません
         </div>
         {% endif %}

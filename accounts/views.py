@@ -6,6 +6,7 @@ from django.views import View
 from django.views.generic import ListView
 from django.contrib.auth import login, authenticate
 from django.urls import reverse, reverse_lazy
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from django.views.generic import TemplateView, DetailView, CreateView, DeleteView
 from django.contrib.auth import views as auth_views
@@ -93,6 +94,20 @@ class ProfileView(DetailView):
         context['to_pending_collaborator_list'] = to_pending_collaborators
         from_pending_collaborators = Collaboration.objects.filter(to_user=self.request.user, status="pending").values_list("from_user", flat=True)
         context['from_pending_collaborator_list'] = from_pending_collaborators
+        context['numbers'] = [1, 2, 3, 4] 
+        if context["is_self"]:
+            paginator = Paginator(self.object.projects.all().order_by("-updated_at"), 20)
+        else:
+            paginator = Paginator(self.object.projects.filter(Q(is_public=True) | Q(members=self.request.user)).order_by("-updated_at"), 20)
+
+        page = self.request.GET.get("page")
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        context["page_obj"] = page_obj
         return context
     
 profile = ProfileView.as_view()

@@ -1,67 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
 
+
 {# -- タイトル -- #}
-{% block title%}profile{% endblock %}
+{% block title%}文献検索{% endblock %}
 
 {# -- CSS -- #}
 {% block extra_css %}
-    <link href={% static 'css/accounts/profile.css' %} rel="stylesheet" media="all">
+    <link href={% static 'css/research_projects/project_list.css' %} rel="stylesheet" media="all">
 {% endblock %}
 
 {# --メインコンテンツ --#}
 {% block main %}
-    <main>
-        <div class="titleb">
-        {{ profile_user }}のページ
-        </div>
-        {% if is_self %}
-        <div id="management">
-        <a href="{% url 'accounts:collaboration_request_list' username=user.username %}">共同研究申請処理</a><br>
-        <a href="{% url 'research_projects:create_project' %}">プロジェクト作成</a>
-        <form method="post" class="btn btn-secondary" action="{% url 'accounts:logout' %}">
-            {% csrf_token %}
-            <button type="submit">ログアウト</button>
+    <div class="titleb"><h2>文献一覧</h2>
+    </div>
+    <div id="search">
+        <form method="GET" action="{% url "research_projects:search_paper" project_id=project_id %}">
+            <p class="query">
+            {{ form.query }}
+            </p>
+            <button type="submit">検索</button>
         </form>
+    </div>
+
+
+    <div id="project_list">
+        {% if papers %}
+        {% for paper in papers %}
+        <div class="paper">
+            <a href="{% url 'research_projects:add_paper' project_id=project_id paper_id=paper.paper_id %}">{{ paper.title }}</a>
         </div>
-
-        {% else %}
-
-        <div id="management">
-        {% if profile_user.user_id in collaborator_list %}
-        <span class="done">既に共同研究者です</span>
-        {% elif profile_user.user_id in from_pending_collaborator_list %}
-        <a href="{% url 'accounts:manage_collaboration_request' username=user.username %}">リクエストに応答</a>
-        {% elif profile_user.user_id in to_pending_collaborator_list %}
-        <span class="done">現在申請中</span>
-        {% else %}
-        <form method="post" class="request" action="{% url 'accounts:send_collaboration_request' to_user_id=profile_user.user_id %}">
-            {% csrf_token %}
-            <button type="submit">共同研究申請</button>
-        </form>
-        {% endif %}
-        </div>
-        {% endif %}
-
-
-        <div class="titlef">
-            参加プロジェクト一覧
-        </div>
-        <div id="project_list">
-
-        {% for project in page_obj %}
-        <div class="project">
-        {% if project.is_public or user in project.members.all %}
-        <a href="{% url 'research_projects:project_detail' project.project_id %}">
-            {{ project.name }}  short id:{{ project.short_project_id }} <br>
-            {{ project.description }}
-        </a>
-        {% else %}
-        {{ project.name }} {{ project.short_project_id }} {{ project.description }}
-        {% endif %}
-        </div>
-
         {% endfor %}
+        {% else %}
+        <div class="paper">
+            文献がありません
+        </div>
+        {% endif %}
 
         <div id="pagination">
             {% if page_obj.paginator.num_pages < 10 %}
@@ -126,8 +100,7 @@
             <div class="page_num"><a href="?page={{ page_obj.paginator.num_pages}}">{{ page_obj.paginator.num_pages }}</a></div>
             {% endif %}
         </div>
-        </div>
-    </main>
+    </div>
 {% endblock %}
 
 {# -- フッターは表示しない -- #}

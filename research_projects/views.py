@@ -4,9 +4,10 @@ from django.db.models import Max
 from django.http import JsonResponse
 from django.views import View
 from .models import Project, Post, PapersIndices
-from .forms import AddMemberForm, SearchForm
+from .forms import AddMemberForm, SearchProjectForm, SearchPaperForm
 from papers.models import Paper
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 
 # Create your views here.
@@ -77,6 +78,7 @@ add_member = AddMemberView.as_view()
 class AddPostView(CreateView):
     model = Post
     template_name = "research_projects/add_post.html"
+    context_object_name = "papers"
     fields = ["content"]
 
     def get_project(self):
@@ -95,6 +97,37 @@ class AddPostView(CreateView):
         return super().form_valid(form)
     
 add_post = AddPostView.as_view()
+
+
+class SearchPaperView(ListView):
+    model = Paper
+    template_name = "research_projects/search_paper.html"
+    context_object_name = "papers"
+    paginate_by = 20
+
+    def get_queryset(self):
+        form = SearchPaperForm(self.request.GET)
+
+        if form.is_valid():
+            query = form.cleaned_data.get("query")
+            if query:
+                queryset = Paper.objects.all()
+                queryset = queryset.filter(Q(title__icontains=query) | Q(arxiv__icontains=query) | Q(doi__icontains=query))
+            else:
+                queryset = Paper.objects.all()
+
+        else:
+            queryset = Paper.objects.all()
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = SearchPaperForm(self.request.GET)
+        context["project_id"] = get_object_or_404(Project, project_id=self.kwargs.get("project_id")).project_id
+        return context
+
+search_paper = SearchPaperView.as_view()
 
 
 class AddPaper(CreateView):
@@ -156,7 +189,7 @@ class ProjectListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        form = SearchForm(self.request.GET)
+        form = SearchProjectForm(self.request.GET)
 
         if form.is_valid():
             query = form.cleaned_data.get("query")
@@ -176,7 +209,7 @@ class ProjectListView(ListView):
         #ページネーションのために使う
         context['numbers'] = [1, 2, 3, 4]  # 配列をコンテキストに追加
 
-        context["form"] = SearchForm(self.request.GET or None)
+        context["form"] = SearchProjectForm(self.request.GET or None)
         if "query" in self.request.GET:
             query = self.request.GET.get("query", "").strip()
             if query:

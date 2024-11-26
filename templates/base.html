@@ -57,7 +57,7 @@
                     <li class="heading"><a href="#l">マイプロジェクト</a></li>
                     {% if user.is_authenticated %}
                         {% for project in latest_projects %}
-                        <li class="menu_element"><a href="#">{{project.name}}</a></li>
+                        <li class="menu_element"><a href="{% url 'research_projects:project_detail' project_id=project.project_id %}">{{ project.name }}</a></li>
                         {% endfor %}
                     {% endif %}
                     <li class="heading"><a href="{% url 'research_projects:project_list' %}">公開プロジェクト一覧</a></li>

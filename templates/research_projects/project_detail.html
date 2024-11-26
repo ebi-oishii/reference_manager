@@ -60,7 +60,7 @@
     <div id="references">
     <h2>References</h2>
     {% if request.user in project.members.all %}
-    <a href="{% url 'research_projects:add_paper' project.project_id %}">Add paper</a><br>
+    <a href="{% url 'research_projects:search_paper' project_id=project.project_id %}">Add paper</a><br>
     {% endif %}
     {% for paper_index in project.papers_indices.all %}
 
