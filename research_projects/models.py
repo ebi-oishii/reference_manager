@@ -3,6 +3,7 @@ from accounts.models import CustomUser
 from papers.models import Paper
 import uuid
 import base58
+from django.utils.timezone import now
 # Create your models here.
 
 class Project(models.Model):
@@ -47,6 +48,15 @@ class PapersIndices(models.Model):
     def __str__(self):
         return self.project.name + self.paper.title
 
+    def save(self, *args, **kwargs):
+        # 親モデルのupdated_atを更新
+        if self.project:
+            self.project.updated_at = now()
+            self.project.save()
+
+        # 子モデル自体の保存
+        super().save(*args, **kwargs)
+        
 
 class Post(models.Model):
     class Meta:
@@ -59,3 +69,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.content[:20]
+    
+    def save(self, *args, **kwargs):
+        # 親モデルのupdated_atを更新
+        if self.project:
+            self.project.updated_at = now()
+            self.project.save()
+
+        # 子モデル自体の保存
+        super().save(*args, **kwargs)

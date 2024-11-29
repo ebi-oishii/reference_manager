@@ -16,11 +16,26 @@
         {{ project.name }}
         </h2>
     </div>
+
     <div id="project_detail">
+
     {% if project.project_url %}
-    <h2><a href="{{ project.project_url }}">プロジェクトURL</a></h2>
+    <div class="project_section" id="project_url">
+        <h2>プロジェクトURL</h2>
+        <a href="{{ project.project_url }}">{{ project.project_url }}</a>
+    </div>
     {% endif %}
 
+    <div class="project_section" id="abstract">
+        <h2>概要</h2>
+        {% if project.description %}
+        {{ project.description }}
+        {% else %}
+        概要はまだありません
+        {% endif %}
+    </div>
+
+    {% if request.user in project.members.all %}
     <div id="settings">
         <form method="post" action="{% url 'research_projects:public_switch' project_id=project.project_id %}">
             {% csrf_token %}
@@ -32,29 +47,37 @@
             <input class="toggle" type="checkbox" name="toggle_visible" {% if project.is_visible %} checked="checked" {% endif %}>可視</input>
             <input type="submit" value="設定変更"></input>
         </form>
+        <a href="{% url 'research_projects:change_url' project_id=project.project_id %}">URL変更</a>
+        <a href="{% url 'research_projects:delete_project' project_id=project.project_id %}">プロジェクト削除</a>
     </div>
+    {% endif %}
     
     <div id="members">
-    {% for member in project.members.all %}
-    <a href="{% url 'accounts:profile' member.username %}"> {{ member.username }} </a>
+        <h2>参加メンバー</h2>
+    {% for member in members_short_list %}
+    <a href="{% url 'accounts:profile' member.username %}"> {{ member.username }}  ID:{{ member.short_user_id }} </a><br>
     {% endfor %}
 
     {% if request.user in project.members.all %}
-    <a href="{% url 'research_projects:add_member' project_id=project.project_id %}">メンバー追加</a><br>
+    <a href="{% url 'research_projects:add_search_member' project_id=project.project_id %}">メンバー追加</a><br>
     {% endif %}
     </div>
 
-
-    {% if request.user in project.members.all %}
     <div id="posts">
+        <h2>投稿</h2>
+    {% if request.user in project.members.all %}
     <a href="{% url 'research_projects:create_post' project.project_id %}">Add post</a><br>
     {% endif %}
-    {% for post in project.posts.all %}
+    {% if project.posts.all %}
+    {% for post in posts_short_list %}
     {{ post.contributer }}
     {{ post.content }}
     {{ post.posted_on }}
     <br>
     {% endfor %}
+    {% else %}
+    <p>投稿はまだありません</p>
+    {% endif %}
     </div>
 
     <div id="references">
@@ -64,15 +87,13 @@
     {% endif %}
     {% for paper_index in project.papers_indices.all %}
 
-    {% if request.user in project.members.all %}
     {{ paper_index.index }} {{ paper_index.paper.title }} {% for author in paper_index.paper.authors.all %} {{ author.first_name }} {{author.last_name}} {% endfor %} {{ paper_index.paper.arxiv }} {% if paper_index.description %} {{ paper_index.description }} {% endif %}
     <br>
+    {% if request.user in project.members.all %}
     <p><a href="{% url 'research_projects:edit_citation' project.project_id paper_index.index %}">Edit</a></p>
-    {% else %}
     {% endif %}
     {% endfor %}
+    </div>
+</div>
 {% endblock %}
 
-{# -- フッターは表示しない -- #}
-{% block footer %}
-{% endblock %}

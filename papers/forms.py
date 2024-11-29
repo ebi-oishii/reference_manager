@@ -7,3 +7,6 @@ class ImportPaperForm(forms.ModelForm):
     class Meta:
         model = Paper
         fields = ['arxiv', 'doi']
+
+class SearchPaperForm(forms.Form):
+    query = forms.CharField(max_length=100, required=False, label='keyword')

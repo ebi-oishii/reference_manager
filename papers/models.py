@@ -53,3 +53,13 @@ class Paper(models.Model):
     def __str__(self):
         return self.title
     
+    def clean(self):
+        # 空文字列に対して一意性を無視する
+        if self.arxiv == "":
+            self.arxiv = None  # 空文字列を None に変換して一意性制約を回避
+        
+        if self.doi == "":
+            self.doi = None
+        
+        super().clean()
+    

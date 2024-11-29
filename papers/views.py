@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import CreateView, ListView, DetailView
-from .forms import ImportPaperForm
+from .forms import ImportPaperForm, SearchPaperForm
 from .models import Paper, Author
 from django.urls import reverse_lazy
 from datetime import datetime
+from django.db.models import Q
 
 import requests
 import xml.etree.ElementTree as ET
@@ -106,7 +107,35 @@ paper_detail = PaperDetailView.as_view()
 class PaperListView(ListView):
     template_name = "papers/paper_list.html"
     context_object_name = "papers"
-    queryset = Paper.objects.all()
     paginate_by = 20
+
+    def get_queryset(self):
+        form = SearchPaperForm(self.request.GET)
+        queryset = Paper.objects.all()
+        if "query" in self.request.GET:
+            if form.is_valid():
+                query = form.cleaned_data.get("query")
+                if query:
+                    queryset = queryset.filter(Q(title__icontains=query) | Q(arxiv__icontains=query) | Q(doi__icontains=query))
+        else:
+            queryset = Paper.objects.all()
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #ページネーションのために使う
+        context['numbers'] = [1, 2, 3, 4]  # 配列をコンテキストに追加
+
+        context["form"] = SearchPaperForm(self.request.GET or None)
+        if "query" in self.request.GET:
+            query = self.request.GET.get("query", "").strip()
+            if query:
+                context["message"] = f"検索結果： {query}"
+            else:
+                context["message"] = "全ての結果" 
+        else:
+            context["message"] = "全ての結果"
+        return context
 
 paper_list = PaperListView.as_view()

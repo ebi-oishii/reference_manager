@@ -169,7 +169,7 @@ class UserSearchView(ListView):
             if query:
                 queryset = CustomUser.objects.filter(short_user_id=query)
             else:
-                queryset = CustomUser.objects.all()
+                queryset = CustomUser.objects.all().order_by("username")
 
         else:
             queryset = CustomUser.objects.all()
@@ -192,6 +192,6 @@ class CollaborationRequestListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return Collaboration.objects.filter(to_user=self.request.user,status="pending")
+        return Collaboration.objects.filter(to_user=self.request.user,status="pending").order_by("created_at")
 
 collaboration_request_list = CollaborationRequestListView.as_view()

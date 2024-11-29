@@ -3,41 +3,41 @@
 
 
 {# -- タイトル -- #}
-{% block title%}文献一覧{% endblock %}
+{% block title%}文献検索{% endblock %}
 
 {# -- CSS -- #}
 {% block extra_css %}
-    <link href={% static 'css/papers/paper_list.css' %} rel="stylesheet" media="all">
-    </style>
-    
+    <link href={% static 'css/research_projects/project_list.css' %} rel="stylesheet" media="all">
 {% endblock %}
 
 {# --メインコンテンツ --#}
 {% block main %}
-    <div class="titleb"><h2>文献一覧</h2>
+    <div class="titleb"><h2>共同研究者一覧</h2>
     </div>
     <div id="search">
-        <form method="GET" action="{% url "papers:paper_list" %}">
+        <form method="GET" action="{% url "research_projects:add_search_member" project_id=project_id %}">
             <p class="query">
             {{ form.query }}
             </p>
             <button type="submit">検索</button>
         </form>
-        <p class="import_paper">
-        <a href="{% url 'papers:import_paper' %}">import paper</a>
-        </p>
     </div>
 
-    <div id="paper_list">
-        {% if papers %}
-        {% for paper in papers %}
-        <div class="paper">
-            <a href="{% url 'papers:paper_detail' paper_id=paper.paper_id %}">{{ paper.title }}</a>
+
+    <div id="project_list">
+        {% if collaborators %}
+        {% for collaborator in collaborators %}
+        <div class="collaborator">
+            <a href="{% url 'accounts:profile' profile_username=collaborator.username %}">{{ collaborator.username }}</a>
+            <form method="post" action="{% url "research_projects:add_member" project_id=project_id user_id=collaborator.user_id %}">
+                {% csrf_token %}
+                <button type="submit">追加</button>
+            </form>
         </div>
         {% endfor %}
         {% else %}
-        <div class="project">
-            文献がありません
+        <div class="collaborator">
+            共同研究者がいません
         </div>
         {% endif %}
 
@@ -105,4 +105,8 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
 {% endblock %}

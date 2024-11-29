@@ -32,6 +32,9 @@ class AddMemberForm(forms.ModelForm):
             self.fields["members"].queryset = get_user_model().objects.filter(user_id__in=accepted_users).exclude(user_id__in=existing_members)
 
 
+class SearchMemberForm(forms.Form):
+    query = forms.CharField(max_length=100, required=False, label="keyword")
+
 class SearchPaperForm(forms.Form):
     query = forms.CharField(max_length=100, required=False, label='keyword')
 

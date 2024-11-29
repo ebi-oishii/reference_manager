@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# -- タイトル -- #}
+{% block title%}ログイン{% endblock %}
+
+{# -- CSS -- #}
+{% block extra_css %}
+    <style type="text/css">
+        main > section > .mx-auto {
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{# --メインコンテンツ --#}
+{% block main %}
+    <main>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">確認</button>
+        </form>
+        <a href="{% url 'research_projects:project_detail' project_id=object.project_id %}">戻る</a>
+    </main>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
+{% endblock %}
