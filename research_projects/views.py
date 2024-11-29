@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, DetailView, UpdateView, ListView, FormView
 from django.db.models import Max
+from django.db import transaction
 from django.http import JsonResponse
 from django.views import View
 from .models import Project, Post, PapersIndices
@@ -99,9 +100,9 @@ class AddPostView(CreateView):
 add_post = AddPostView.as_view()
 
 
-class SearchPaperView(ListView):
+class AddSearchPaperView(ListView):
     model = Paper
-    template_name = "research_projects/search_paper.html"
+    template_name = "research_projects/add_search_paper.html"
     context_object_name = "papers"
     paginate_by = 20
 
@@ -127,36 +128,63 @@ class SearchPaperView(ListView):
         context["project_id"] = get_object_or_404(Project, project_id=self.kwargs.get("project_id")).project_id
         return context
 
-search_paper = SearchPaperView.as_view()
+add_search_paper = AddSearchPaperView.as_view()
 
 
-class AddPaper(CreateView):
-    model = PapersIndices
-    fields = ["paper",]
-    template_name = "research_projects/add_paper.html"
+class AddPaperView(View):
+    def post(self, request, *args, **kwargs):
+        paper_id = kwargs.get("paper_id")
+        paper = get_object_or_404(Paper, paper_id=paper_id)
+        project_id = kwargs.get("project_id")
+        project = get_object_or_404(Project, project_id=project_id)
+        try:
+            with transaction.atomic():
+                i = PapersIndices.objects.filter(project=project).aggregate(Max("index"))["index__max"]
+                if i is None:
+                    i = 1
+                else:
+                    i = i + 1
+            paper_index , created = PapersIndices.objects.get_or_create(project=project, paper=paper, index=i)
+            if created:
+                paper_index.save()
+                return JsonResponse({"message": f"{paper.title}を追加しました"})
+            else:
+                return JsonResponse({"message": "追加に失敗"})
+        
+        except Exception as e:
+            # エラーハンドリング
+            return JsonResponse({"error": "追加処理中にエラーが発生しました。", "details": str(e)}, status=500)
 
-    def get_project(self):
-        project_id = self.kwargs.get("project_id")
-        return get_object_or_404(Project, project_id=project_id)
+add_paper = AddPaperView.as_view()
+            
 
-    def get_success_url(self):
-        project = self.get_project()
-        return reverse_lazy('research_projects:project_detail', kwargs={"project_id": project.project_id})
+# class AddPaper(CreateView):
+#     model = PapersIndices
+#     fields = ["paper",]
+#     template_name = "research_projects/add_paper.html"
 
-    def form_valid(self, form):
-        paper_index = form.save(commit=False)
-        project = self.get_project()
-        paper_index.project = project
-        i = PapersIndices.objects.filter(project=project).aggregate(Max("index"))["index__max"]
-        if i is None:
-            i = 1
-        else:
-            i += 1
-        paper_index.index = i
-        paper_index.save()
-        return super().form_valid(form)
+#     def get_project(self):
+#         project_id = self.kwargs.get("project_id")
+#         return get_object_or_404(Project, project_id=project_id)
+
+#     def get_success_url(self):
+#         project = self.get_project()
+#         return reverse_lazy('research_projects:project_detail', kwargs={"project_id": project.project_id})
+
+#     def form_valid(self, form):
+#         paper_index = form.save(commit=False)
+#         project = self.get_project()
+#         paper_index.project = project
+#         i = PapersIndices.objects.filter(project=project).aggregate(Max("index"))["index__max"]
+#         if i is None:
+#             i = 1
+#         else:
+#             i += 1
+#         paper_index.index = i
+#         paper_index.save()
+#         return super().form_valid(form)
     
-add_paper = AddPaper.as_view()
+# add_paper = AddPaper.as_view()
 
 
 class EditCitationView(UpdateView):

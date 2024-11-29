@@ -15,7 +15,7 @@
     <div class="titleb"><h2>文献一覧</h2>
     </div>
     <div id="search">
-        <form method="GET" action="{% url "research_projects:search_paper" project_id=project_id %}">
+        <form method="GET" action="{% url "research_projects:add_search_paper" project_id=project_id %}">
             <p class="query">
             {{ form.query }}
             </p>
@@ -29,6 +29,10 @@
         {% for paper in papers %}
         <div class="paper">
             <a href="{% url 'research_projects:add_paper' project_id=project_id paper_id=paper.paper_id %}">{{ paper.title }}</a>
+            <form method="post" action="{% url "research_projects:add_paper" project_id=project_id paper_id=paper.paper_id %}">
+                {% csrf_token %}
+                <button type="submit">追加</button>
+            </form>
         </div>
         {% endfor %}
         {% else %}
