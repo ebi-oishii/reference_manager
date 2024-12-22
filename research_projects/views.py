@@ -226,7 +226,10 @@ class ProjectListView(ListView):
                     queryset = Project.objects.filter(is_public=True)
                     queryset = queryset.filter(name__icontains=query) | queryset.filter(description__icontains=query) | queryset.filter(short_project_id__icontains=query) | queryset.filter(project_id__icontains=query)
         else:
-            queryset = Project.objects.filter(is_public=True, bookmark_user=self.request.user)
+            if self.request.user.is_authenticated:
+                queryset = Project.objects.filter(is_public=True, bookmark_user=self.request.user)
+            else:
+                queryset = Project.objects.none()
         
         return queryset
 
@@ -301,6 +304,20 @@ class ChangeURLView(UpdateView):
 change_url = ChangeURLView.as_view()
 
 
+class ChangeDescriptionView(UpdateView):
+    model = Project
+    fields = ["description", ]
+    template_name = "research_projects/change_description.html"
+
+    def get_success_url(self):
+        return reverse_lazy("research_projects:project_detail", kwargs={"project_id": self.kwargs.get("project_id")})
+
+    def get_object(self):
+        return get_object_or_404(Project, project_id=self.kwargs.get("project_id"))
+    
+change_description = ChangeDescriptionView.as_view()
+
+
 class DeleteProjectView(DeleteView):
     model = Project
     template_name = "research_projects/delete_confirmation.html"
@@ -312,3 +329,21 @@ class DeleteProjectView(DeleteView):
         return reverse_lazy("accounts:profile", kwargs={"profile_username": self.request.user.username})
     
 delete_project = DeleteProjectView.as_view()
+
+
+class PostListView(ListView):
+    template_name = "reseach_projects/post_list.html"
+    context_object_name = "posts"
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(project=self.kwargs.get("project_id")).order_by("posted_on")
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #ページネーションのために使う
+        context['numbers'] = [1, 2, 3, 4]  # 配列をコンテキストに追加
+        return context
+    
+post_list = PostListView.as_view()

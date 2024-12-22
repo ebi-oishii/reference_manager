@@ -17,5 +17,7 @@ urlpatterns = [
     path('public_switch/<uuid:project_id>/', views.public_switch, name="public_switch"),
     path('visible_switch/<uuid:project_id>/', views.visible_switch, name="visible_switch"),
     path('change_url/<uuid:project_id>', views.change_url, name="change_url"),
+    path('change_description/<uuid:project_id>', views.change_description, name="change_description"),
     path('delete_project/<uuid:project_id>/', views.delete_project, name="delete_project"),
+    path('post_list/<uuid:project_id>', views.post_list, name="post_list"),
 ]

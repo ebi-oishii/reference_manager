@@ -28,6 +28,9 @@
 
     <div class="project_section" id="abstract">
         <h2>概要</h2>
+        {% if request.user in project.members.all %}
+        <a href="{% url 'research_projects:change_description' project_id=project.project_id %}">変更</a><br>
+        {% endif %}
         {% if project.description %}
         {{ project.description }}
         {% else %}
@@ -68,6 +71,7 @@
     {% if request.user in project.members.all %}
     <a href="{% url 'research_projects:create_post' project.project_id %}">Add post</a><br>
     {% endif %}
+    <a href="{% url 'research_projects:post_list' project.project_id %}">Post一覧</a><br>
     {% if project.posts.all %}
     {% for post in posts_short_list %}
     {{ post.contributer }}

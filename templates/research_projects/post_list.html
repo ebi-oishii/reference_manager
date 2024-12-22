@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{# -- タイトル -- #}
+{% block title%}公開プロジェクト一覧{% endblock %}
+
+{# -- CSS -- #}
+{% block extra_css %}
+    <link href={% static 'css/research_projects/project_list.css' %} rel="stylesheet" media="all">
+{% endblock %}
+
+{# --メインコンテンツ --#}
+{% block main %}
+    <div class="titleb"><h2>投稿一覧</h2></div>
+
+    <div class="titlef">
+        {{ message }}
+    </div>
+    <div id="project_list">
+        {% if posts %}
+        {% for post in posts %}
+        <div class="post">
+            {{ post.content }}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="post">
+            投稿がありません
+        </div>
+        {% endif %}
+
+        <div id="pagination">
+            {% if page_obj.paginator.num_pages < 10 %}
+
+            {% for i in page_obj.paginator.page_range %}
+            <div class="page_num">
+                {% if i == page_obj.number %}
+                <span class="current_page">{{ i }}</span>
+                {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% elif page_obj.number < 4 %}
+            {% for i in numbers %}
+            <div class="page_num">
+                {% if page_obj.number == i %}
+                <span class="current_page">{{ i }}</span>
+                {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><a href="?page={{ page_obj.paginator.num_pages|add:"-1" }}">{{ page_obj.paginator.num_pages|add:"-1" }}</a></div>
+            <div class="page_num"><a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></div>
+            
+            {% elif page_obj.number > page_obj.paginator.num_pages|add:"-3" %}
+            <div class="page_num"><a href="?page=1">1</a></div>
+            <div class="page_num"><a href="?page=2">2</a></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            {% for i in numbers %}
+            <div class="page_num">
+                {% with page_obj.paginator.num_pages|add:-5|add:i as calculated_page %}
+                {% if calculated_page == page_obj.number %}
+                <span class="current_page">{{ page_obj.paginator.num_pages|add:-5 |add:i }}</span>
+                {% else %}
+                <a href="?page={{ page_obj.paginator.num_pages|add:-5 |add:i }}">{{ page_obj.paginator.num_pages|add:"-5" |add:i }}</a>
+                {% endif %}
+                {% endwith %}
+            </div>
+            {% endfor %}
+
+            {% else %}
+            <div class="page_num"><a href="?page=1">1</a></div>
+            <div class="page_num"><a href="?page=2">2</a></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></div>
+            <div class="page_num"><span class="current_page">{{ page_obj.number }}</span></div>
+            <div class="page_num"><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><span class="dum">・</span></div>
+            <div class="page_num"><a href="?page={{ page_obj.paginator.num_pages|add:"-1" }}">{{ page_obj.paginator.num_pages|add:"-1" }}</a></div>
+            <div class="page_num"><a href="?page={{ page_obj.paginator.num_pages}}">{{ page_obj.paginator.num_pages }}</a></div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{# -- フッターは表示しない -- #}
+{% block footer %}
+{% endblock %}

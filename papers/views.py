@@ -22,7 +22,12 @@ class ImportPaperView(CreateView):
     model = Paper
     form_class = ImportPaperForm
     template_name = "papers/import_paper.html"
-    success_url = reverse_lazy("accounts:index")
+
+    def get_success_url(self):
+        if self.kwargs.get("project_id"):
+            return reverse_lazy("research_projects:add_search_paper", project_id=self.kwargs.get())
+        else:
+            return reverse_lazy("papers:paper_list")
 
     def form_valid(self, form):
         if form.cleaned_data.get('switch') == "arxiv":
