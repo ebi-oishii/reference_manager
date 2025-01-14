@@ -15,4 +15,5 @@ urlpatterns = [
     path('collaboration/withdraw/<uuid:request_id>/', views.withdraw_collaboration_request, name="withdraw_collaboration_request"),
     path('user_search', views.user_search, name="user_search"),
     path('collaboration/list/<str:username>', views.collaboration_request_list, name="collaboration_request_list"),
+    path('collaborator_list/', views.collaborator_list, name="collaborator_list"),
 ]

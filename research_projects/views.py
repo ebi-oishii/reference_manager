@@ -347,3 +347,12 @@ class PostListView(ListView):
         return context
     
 post_list = PostListView.as_view()
+
+
+class ExportCitationView(View):
+    def get(self):
+        project_id = self.kwargs.get("project_id")
+        project = get_object_or_404(Project, project_id=project_id)
+        citation_list = PapersIndices.objects.query(project=project).values_list("paper", flat=True)
+        for paper in citation_list:
+            title = paper.title

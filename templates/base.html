@@ -60,6 +60,7 @@
                         <li class="menu_element"><a href="{% url 'research_projects:project_detail' project_id=project.project_id %}">{{ project.name }}</a></li>
                         {% endfor %}
                     {% endif %}
+                    <li class="heading"><a href="{% url 'accounts:collaborator_list' %}">共同研究者一覧</li>
                     <li class="heading"><a href="{% url 'research_projects:project_list' %}">公開プロジェクト一覧</a></li>
                     <li class="heading"><a href="{% url 'accounts:user_search' %}">ユーザー検索</a></li>
                     <li class="heading"><a href="{% url 'papers:paper_list' %}">文献一覧</a></li>

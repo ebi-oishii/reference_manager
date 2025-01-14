@@ -7,6 +7,7 @@ import base58
 class CustomUser(AbstractUser):
     user_id = models.UUIDField(verbose_name="user_id", default=uuid.uuid4, editable=False, primary_key=True)
     short_user_id = models.CharField(verbose_name="short_user_id", max_length=8, editable=False, unique=True)
+    is_visible = models.BooleanField(verbose_name="is_visible", default=True)
 
     class Meta:
         db_table = "custom_user"

@@ -195,3 +195,17 @@ class CollaborationRequestListView(ListView):
         return Collaboration.objects.filter(to_user=self.request.user,status="pending").order_by("created_at")
 
 collaboration_request_list = CollaborationRequestListView.as_view()
+
+
+class CollaboratorListView(ListView):
+    template_name = "accounts/collaborator_list.html"
+    context_object_name = "collaborators"
+    paginate_by = 20
+
+    def get_queryset(self):
+        collaborators_temp = Collaboration.objects.filter(Q(from_user=self.request.user, status="accepted") | Q(to_user=self.request.user, status="accepted")).values_list("from_user", "to_user")
+        collaborators =[user_id  for pair in collaborators_temp  for user_id in pair  if user_id != self.request.user.user_id]
+        queryset = CustomUser.objects.filter(user_id__in = collaborators)
+        return queryset
+    
+collaborator_list = CollaboratorListView.as_view()
